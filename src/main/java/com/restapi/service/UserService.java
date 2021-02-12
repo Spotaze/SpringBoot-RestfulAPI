@@ -16,39 +16,46 @@ public class UserService {
     @Autowired
     UsersRepo usersRepo;
 
-    public ResponseEntity<User> save(User user){
+    public ResponseEntity save(User user){
 
         Optional<User> userByEmail = usersRepo.findUserByEmail(user.getEmailAddress());
 
         if(user.emailContains() && !userByEmail.isPresent()) {
             usersRepo.save(user);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseEntity.ok().build();
         }
-        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Duplicate of email or email doesnt include '@' ");
     }
 
     public List<User> getAllUsers(){
         return usersRepo.findAll();
     }
 
-    public ResponseEntity<User> userById(Long userId){
+    public ResponseEntity userById(Long userId){
         Optional<User> user = usersRepo.findById(userId);
 
         if(user.isPresent()){
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+            return ResponseEntity
+                    .ok(user.get());
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("User with: " + userId + " was not found");
 
     }
 
-    public ResponseEntity<User> deleteUser(Long userId){
+    public ResponseEntity deleteUser(Long userId){
         boolean exists = usersRepo.existsById(userId);
 
         if(!exists){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("User with: " + userId + " id was not found");
         }
         usersRepo.deleteById(userId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
 }

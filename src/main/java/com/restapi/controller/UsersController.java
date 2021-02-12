@@ -7,32 +7,31 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-
 
 @RestController
+@RequestMapping("/users")
 public class UsersController {
 
     @Autowired
     UserService userService;
 
-    @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    @PostMapping("/add")
+    public ResponseEntity createUser(@RequestBody User user){
         return userService.save(user);
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public List<User> getAllUsers(){
         return userService.getAllUsers();
     }
 
-    @GetMapping(path ="/users/{userId}")
-    public ResponseEntity<User> userById(@PathVariable("userId") Long userId){
+    @GetMapping(path ="/{userId}")
+    public ResponseEntity userById(@PathVariable("userId") Long userId){
        return userService.userById(userId);
     }
 
-    @DeleteMapping(path = "/users/{userId}")
-    public ResponseEntity<User> deleteUser(@PathVariable("userId") Long userId){
+    @DeleteMapping(path = "/delete/{userId}")
+    public ResponseEntity deleteUser(@PathVariable("userId") Long userId){
        return userService.deleteUser(userId);
     }
 
